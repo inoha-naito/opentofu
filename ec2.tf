@@ -26,9 +26,13 @@ resource "aws_security_group_rule" "example_ec2_out" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+data "aws_ssm_parameter" "al2023_ami" {
+  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
+}
+
 resource "aws_instance" "example_ec2" {
   instance_type = "t2.micro"
-  ami           = "ami-02d36247c5bc58c23"
+  ami           = data.aws_ssm_parameter.al2023_ami.value
   subnet_id     = aws_subnet.example_subnet_a.id
   vpc_security_group_ids = [
     aws_security_group.example_ec2_sg.id,
@@ -45,8 +49,4 @@ EOF
   tags = {
     Name = "example-ec2"
   }
-}
-
-output "example_ec2_ip" {
-  value = aws_instance.example_ec2.public_dns
 }
