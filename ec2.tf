@@ -17,6 +17,15 @@ resource "aws_security_group_rule" "example_ec2_in_http" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "example_ec2_in_ssh" {
+  security_group_id = aws_security_group.example_ec2_sg.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 22
+  to_port           = 22
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "example_ec2_out" {
   security_group_id = aws_security_group.example_ec2_sg.id
   type              = "egress"
@@ -37,6 +46,7 @@ resource "aws_instance" "example_ec2" {
   vpc_security_group_ids = [
     aws_security_group.example_ec2_sg.id,
   ]
+  key_name = aws_key_pair.example_key_pair.id
   user_data = <<EOF
 #!/bin/bash
 yum update -y
