@@ -46,7 +46,7 @@ resource "aws_instance" "example_ec2" {
   vpc_security_group_ids = [
     aws_security_group.example_ec2_sg.id,
   ]
-  key_name = aws_key_pair.example_key_pair.id
+  key_name  = aws_key_pair.example_key_pair.id
   user_data = <<EOF
 #!/bin/bash
 yum update -y

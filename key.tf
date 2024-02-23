@@ -1,12 +1,12 @@
 #privateキーのアルゴリズム設定
 resource "tls_private_key" "example_ed25519" {
   algorithm = "RSA"
-  rsa_bits = 4098
+  rsa_bits  = 4098
 }
 
 resource "local_sensitive_file" "private_key_pem" {
   filename        = "../../.ssh/aws.pem"
-  content         = tls_private_key.example_ed25519.private_key_pem
+  content         = tls_private_key.example_ed25519.private_key_openssh
   file_permission = "0400"
 }
 
