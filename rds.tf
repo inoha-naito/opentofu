@@ -8,13 +8,22 @@ resource "aws_security_group" "example_rds_sg" {
   }
 }
 
+# resource "aws_security_group_rule" "example_rds_in" {
+#   security_group_id        = aws_security_group.example_rds_sg.id
+#   type                     = "ingress"
+#   protocol                 = "tcp"
+#   from_port                = 3306
+#   to_port                  = 3306
+#   source_security_group_id = aws_security_group.example_ec2_sg.id
+# }
+
 resource "aws_security_group_rule" "example_rds_in" {
-  security_group_id        = aws_security_group.example_rds_sg.id
-  type                     = "ingress"
-  protocol                 = "tcp"
-  from_port                = 3306
-  to_port                  = 3306
-  source_security_group_id = aws_security_group.example_ec2_sg.id
+  security_group_id = aws_security_group.example_rds_sg.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 3306
+  to_port           = 3306
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "example_rds_out" {
