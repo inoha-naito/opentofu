@@ -5,7 +5,7 @@ resource "tls_private_key" "example_ed25519" {
 }
 
 resource "local_sensitive_file" "private_key_pem" {
-  filename        = "../../.ssh/aws.pem"
+  filename        = "${aws_key_pair.example_key_pair.key_name}.pem"
   content         = tls_private_key.example_ed25519.private_key_openssh
   file_permission = "0400"
 }

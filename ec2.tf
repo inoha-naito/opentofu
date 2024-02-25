@@ -42,7 +42,7 @@ data "aws_ssm_parameter" "al2023_ami" {
 resource "aws_instance" "example_ec2" {
   instance_type = "t2.micro"
   ami           = data.aws_ssm_parameter.al2023_ami.value
-  subnet_id     = aws_subnet.example_subnet_a.id
+  subnet_id     = aws_subnet.example_public_subnet_a.id
   vpc_security_group_ids = [
     aws_security_group.example_ec2_sg.id,
   ]
