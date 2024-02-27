@@ -44,7 +44,7 @@ resource "aws_db_instance" "example_rds" {
   instance_class         = "db.t2.micro"
   username               = "foo"
   password               = "foobarbaz"
-  vpc_security_group_ids = [aws_security_group.example_rds_sg.id]
+  vpc_security_group_ids = [aws_security_group.example_rds_sg.id, aws_security_group.example_rds_lambda_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.example_rds_subnet_group.id
   publicly_accessible    = true
   skip_final_snapshot    = true

@@ -56,7 +56,7 @@ resource "aws_route_table" "example_public_route_table" {
   }
 }
 
-resource "aws_route" "example_route" {
+resource "aws_route" "example_igw_route" {
   route_table_id         = aws_route_table.example_public_route_table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.example_igw.id
@@ -83,4 +83,74 @@ resource "aws_route_table_association" "example_private_route_table_a" {
 resource "aws_route_table_association" "example_private_route_table_c" {
   route_table_id = aws_route_table.example_private_route_table.id
   subnet_id      = aws_subnet.example_private_subnet_c.id
+}
+
+resource "aws_eip" "example_eip" {
+  domain = "vpc"
+
+  tags = {
+    Name = "example-eip"
+  }
+}
+
+resource "aws_nat_gateway" "example_nat" {
+  allocation_id = aws_eip.example_eip.id
+  subnet_id     = aws_subnet.example_public_subnet_a.id
+
+  tags = {
+    Name = "example-nat"
+  }
+}
+
+resource "aws_route" "example_nat_route" {
+  route_table_id         = aws_route_table.example_private_route_table.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.example_nat.id
+}
+
+resource "aws_security_group" "example_lambda_rds_sg" {
+  name        = "example-lambda-rds-sg"
+  description = "RDS-Lambda Security Group"
+  vpc_id      = aws_vpc.example_vpc.id
+
+  tags = {
+    Name = "example-lambda-rds-sg"
+  }
+}
+
+resource "aws_security_group_rule" "example_lambda_rds_out" {
+  security_group_id        = aws_security_group.example_lambda_rds_sg.id
+  type                     = "egress"
+  protocol                 = "tcp"
+  from_port                = 3306
+  to_port                  = 3306
+  source_security_group_id = aws_security_group.example_lambda_rds_sg.id
+}
+
+# resource "aws_security_group_rule" "example_lambda_rds_out" {
+#   security_group_id = aws_security_group.example_lambda_rds_sg.id
+#   type              = "egress"
+#   protocol          = "-1"
+#   from_port         = 0
+#   to_port           = 0
+#   cidr_blocks       = ["0.0.0.0/0"]
+# }
+
+resource "aws_security_group" "example_rds_lambda_sg" {
+  name        = "example-rds-lambda-sg"
+  description = "Lambda-RDS Security Group"
+  vpc_id      = aws_vpc.example_vpc.id
+
+  tags = {
+    Name = "example-rds-lambda-sg"
+  }
+}
+
+resource "aws_security_group_rule" "example_rds_lambda_in" {
+  security_group_id        = aws_security_group.example_rds_lambda_sg.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 3306
+  to_port                  = 3306
+  source_security_group_id = aws_security_group.example_lambda_rds_sg.id
 }
