@@ -118,23 +118,23 @@ resource "aws_security_group" "example_lambda_rds_sg" {
   }
 }
 
-resource "aws_security_group_rule" "example_lambda_rds_out" {
-  security_group_id        = aws_security_group.example_lambda_rds_sg.id
-  type                     = "egress"
-  protocol                 = "tcp"
-  from_port                = 3306
-  to_port                  = 3306
-  source_security_group_id = aws_security_group.example_lambda_rds_sg.id
-}
-
 # resource "aws_security_group_rule" "example_lambda_rds_out" {
-#   security_group_id = aws_security_group.example_lambda_rds_sg.id
-#   type              = "egress"
-#   protocol          = "-1"
-#   from_port         = 0
-#   to_port           = 0
-#   cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id        = aws_security_group.example_lambda_rds_sg.id
+#   type                     = "egress"
+#   protocol                 = "tcp"
+#   from_port                = 3306
+#   to_port                  = 3306
+#   source_security_group_id = aws_security_group.example_lambda_rds_sg.id
 # }
+
+resource "aws_security_group_rule" "example_lambda_rds_out" {
+  security_group_id = aws_security_group.example_lambda_rds_sg.id
+  type              = "egress"
+  protocol          = "-1"
+  from_port         = 0
+  to_port           = 0
+  cidr_blocks       = ["0.0.0.0/0"]
+}
 
 resource "aws_security_group" "example_rds_lambda_sg" {
   name        = "example-rds-lambda-sg"
