@@ -84,9 +84,3 @@ resource "aws_route_table_association" "example_private_route_table_c" {
   route_table_id = aws_route_table.example_private_route_table.id
   subnet_id      = aws_subnet.example_private_subnet_c.id
 }
-
-resource "aws_route" "example_route_tmp" {
-  route_table_id         = aws_route_table.example_private_route_table.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.example_igw.id
-}
